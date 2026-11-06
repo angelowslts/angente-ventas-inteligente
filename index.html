@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agente de Ventas Inteligente</title>
+<meta name="description" content="Agente de IA para equipos comerciales, creado con Microsoft Copilot Studio y Power Automate.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Manrope','Segoe UI','system-ui','sans-serif']},colors:{bg:'var(--bg)',sf:'var(--sf)',ink:'var(--ink)',mut:'var(--mut)',ln:'var(--ln)',soft:'var(--soft)',acc:'var(--acc)',ms:'#0078D4'}}}}</script>
+<style>
+:root{--bg:#f5f8fc;--sf:#fff;--ink:#1a2233;--mut:#566274;--ln:#e2e8f0;--soft:#edf5fd;--acc:#0067b8;--glow:rgba(0,120,212,.16);--nav:rgba(255,255,255,.82);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0a1220;--sf:#101a2c;--ink:#eaf0f8;--mut:#9bacc2;--ln:#1f2d45;--soft:#0f2540;--acc:#5cb3f7;--glow:rgba(0,120,212,.3);--nav:rgba(10,18,32,.82)}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0a1220;--sf:#101a2c;--ink:#eaf0f8;--mut:#9bacc2;--ln:#1f2d45;--soft:#0f2540;--acc:#5cb3f7;--glow:rgba(0,120,212,.3);--nav:rgba(10,18,32,.82)}
+html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 72px)}
+body{background:var(--bg);color:var(--ink)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--nav);backdrop-filter:blur(14px)}
+#nav.sc{border-bottom-color:var(--ln);box-shadow:0 6px 24px -14px rgba(0,0,0,.25)}
+a:focus-visible,button:focus-visible{outline:2px solid #0078d4;outline-offset:3px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-radius:.6rem;padding:.8rem 1.5rem;font-weight:700;font-size:.95rem;transition:.25s}
+.btn-p{background:#0078d4;color:#fff;box-shadow:0 8px 22px -10px rgba(0,120,212,.7)}.btn-p:hover{background:#106ebe;transform:translateY(-2px)}
+.btn-s{background:var(--sf);color:var(--ink);border:1px solid var(--ln)}.btn-s:hover{border-color:#0078d4;color:var(--acc);transform:translateY(-2px)}
+.card{position:relative;overflow:hidden;background:var(--sf);border:1px solid var(--ln);border-radius:1rem;box-shadow:0 1px 2px rgba(16,24,40,.04),0 10px 28px -16px rgba(16,24,40,.14);transition:border-color .3s,box-shadow .3s}
+.card:hover{border-color:#0078d4}
+.card::before{content:"";position:absolute;inset:0;background:radial-gradient(240px circle at var(--x,50%) var(--y,0),var(--glow),transparent 70%);opacity:0;transition:opacity .3s;pointer-events:none}
+.card:hover::before{opacity:1}
+.h2{font-size:clamp(1.75rem,4vw,2.6rem);font-weight:800;letter-spacing:-.02em;line-height:1.15}
+.hero{background:radial-gradient(55% 60% at 85% 0,var(--glow),transparent 70%)}
+.hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--ln) 1px,transparent 1px),linear-gradient(90deg,var(--ln) 1px,transparent 1px);background-size:48px 48px;-webkit-mask-image:radial-gradient(ellipse at 50% 0,#000 10%,transparent 70%);mask-image:radial-gradient(ellipse at 50% 0,#000 10%,transparent 70%);opacity:.6}
+.in{opacity:0;transform:translateY(18px);animation:up .9s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:var(--d,0s)}
+@keyframes up{to{opacity:1;transform:none}}
+.fl{animation:fl 6s ease-in-out infinite}@keyframes fl{50%{transform:translateY(-9px)}}
+.dots span{width:6px;height:6px;border-radius:9px;background:var(--mut);animation:bl 1.2s infinite}.dots span:nth-child(2){animation-delay:.15s}.dots span:nth-child(3){animation-delay:.3s}
+@keyframes bl{0%,60%,100%{opacity:.25}30%{opacity:1}}
+.pulse{animation:pr 2.4s infinite}@keyframes pr{from{box-shadow:0 0 0 0 rgba(255,255,255,.4)}to{box-shadow:0 0 0 22px transparent}}
+.conn{flex:none;width:2px;height:34px;margin:0 auto;background:repeating-linear-gradient(180deg,#0078d4 0 6px,transparent 6px 12px);background-size:2px 12px;animation:fy .8s linear infinite}
+@keyframes fy{to{background-position:0 12px}}@keyframes fx{to{background-position:12px 0}}
+@media (min-width:1024px){.conn{width:40px;height:2px;margin:auto 0;background:repeating-linear-gradient(90deg,#0078d4 0 6px,transparent 6px 12px);background-size:12px 2px;animation-name:fx}}
+.ring{stroke-dasharray:327;stroke-dashoffset:327;transition:stroke-dashoffset 1.6s ease .2s}.on .ring{stroke-dashoffset:98}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.in{opacity:1;transform:none}.ring{stroke-dashoffset:98}}
+</style>
+</head>
+<body class="font-sans antialiased">
+
+<header id="nav" class="sticky z-50 border-b border-transparent" style="top:env(safe-area-inset-top,0px);background:var(--nav);backdrop-filter:blur(14px)">
+ <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-5">
+  <a href="#inicio" class="flex items-center gap-2.5 font-bold"><span class="grid h-9 w-9 place-items-center rounded-lg bg-ms text-white"><i class="block h-5 w-5" data-i="sparkles"></i></span><span class="hidden sm:inline">Agente de Ventas Inteligente</span><span class="sm:hidden">Agente de Ventas</span></a>
+  <nav id="links" class="hidden items-center gap-7 text-sm font-semibold text-mut lg:flex"></nav>
+  <div class="flex items-center gap-2">
+   <a href="#contacto" class="btn btn-p hidden !py-2 sm:inline-flex">Solicitar Demo</a>
+   <button id="mb" aria-label="Abrir menú" class="grid h-10 w-10 place-items-center rounded-lg border border-ln lg:hidden"><i class="block h-5 w-5" data-i="menu"></i></button>
+  </div>
+ </div>
+ <div id="mm" class="hidden border-t border-ln px-5 py-3 lg:hidden"></div>
+</header>
+
+<main>
+<section id="inicio" class="hero relative overflow-hidden">
+ <div class="relative mx-auto grid max-w-7xl items-center gap-14 px-5 pb-20 pt-12 lg:grid-cols-2 lg:pb-28 lg:pt-20">
+  <div>
+   <h1 class="in text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl lg:text-[3.4rem]">Impulsa tus ventas con un Agente Inteligente impulsado por IA</h1>
+   <p class="in mt-6 max-w-xl text-lg leading-relaxed text-mut" style="--d:.12s">Automatiza cotizaciones, optimiza el seguimiento comercial y proporciona argumentarios inteligentes para cerrar más negocios.</p>
+   <div class="in mt-8 flex flex-wrap gap-3" style="--d:.24s"><a href="#contacto" class="btn btn-p">Solicitar Demo</a><a href="#contacto" class="btn btn-s">Hablar con un Experto</a></div>
+   <p class="in mt-8 text-sm text-mut" style="--d:.36s">Construido con Microsoft Copilot Studio y Microsoft Power Automate.</p>
+  </div>
+  <div class="in relative mx-auto w-full max-w-md lg:max-w-lg" style="--d:.3s">
+   <div class="absolute -inset-8 -z-10 blur-3xl" style="background:radial-gradient(circle,var(--glow),transparent 70%)"></div>
+   <div class="rounded-3xl border border-ln bg-sf p-5 shadow-2xl">
+    <div class="flex items-center gap-3 border-b border-ln pb-4">
+     <span class="grid h-10 w-10 place-items-center rounded-xl bg-ms text-white"><i class="block h-5 w-5" data-i="bot"></i></span>
+     <div class="text-sm"><b>Agente de Ventas</b><div class="flex items-center gap-1.5 text-xs text-mut"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>En línea</div></div>
+    </div>
+    <div class="space-y-3 py-5 text-sm">
+     <p class="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-sm bg-ms px-4 py-2.5 text-white">Prepara una cotización para Grupo Alfa con 120 licencias.</p>
+     <p class="w-fit max-w-[90%] rounded-2xl rounded-bl-sm bg-soft px-4 py-2.5">Listo. Generé la propuesta con la plantilla estándar y la dejé lista para tu revisión.</p>
+     <div class="flex w-fit items-center gap-3 rounded-xl border border-ln px-3 py-2"><span class="h-6 w-6 text-acc"><i class="block h-full w-full" data-i="file"></i></span><span class="text-xs"><b>Propuesta_GrupoAlfa.docx</b><br><span class="text-mut">Lista para enviar</span></span></div>
+     <p class="w-fit max-w-[90%] rounded-2xl rounded-bl-sm bg-soft px-4 py-2.5">Programé un seguimiento para el jueves y te avisaré si no hay respuesta.</p>
+     <div class="dots flex gap-1 px-1"><span></span><span></span><span></span></div>
+    </div>
+    <div class="flex items-center rounded-xl border border-ln py-2 pl-4 pr-2 text-xs text-mut">Pregunta algo a tu agente…<span class="ml-auto grid h-7 w-7 place-items-center rounded-lg bg-ms text-white"><i class="block h-4 w-4" data-i="arrow"></i></span></div>
+   </div>
+   <div class="fl absolute -right-2 -top-5 flex items-center gap-2 rounded-xl border border-ln bg-sf px-3 py-2 text-xs font-semibold shadow-lg sm:-right-6"><span class="h-4 w-4 text-ms"><i class="block h-full w-full" data-i="bell"></i></span>Recordatorio enviado</div>
+   <div class="fl absolute -bottom-5 -left-2 flex items-center gap-2 rounded-xl border border-ln bg-sf px-3 py-2 text-xs font-semibold shadow-lg sm:-left-8" style="animation-delay:-3s"><span class="h-4 w-4 text-emerald-500"><i class="block h-full w-full" data-i="trend"></i></span>Oportunidad actualizada</div>
+  </div>
+ </div>
+</section>
+
+<section id="problema" class="py-20 lg:py-28">
+ <div class="mx-auto grid max-w-7xl gap-12 px-5 lg:grid-cols-5">
+  <div class="lg:col-span-2"><div class="lg:sticky lg:top-28"><h2 class="h2">Vender más no debería significar trabajar más</h2><p class="mt-5 max-w-md text-lg text-mut">Los equipos comerciales pierden tiempo y oportunidades en tareas que se pueden resolver de forma inteligente.</p></div></div>
+  <div id="prob" class="lg:col-span-3"></div>
+ </div>
+</section>
+
+<section id="solucion" class="border-y border-ln bg-sf py-20 lg:py-28">
+ <div class="mx-auto grid max-w-7xl items-center gap-12 px-5 lg:grid-cols-2 lg:gap-16">
+  <div>
+   <h2 class="h2">Un asistente que trabaja al lado de cada vendedor</h2>
+   <p class="mt-5 max-w-xl text-lg leading-relaxed text-mut">Un asistente conversacional desarrollado con Microsoft Copilot Studio que ayuda a los vendedores a generar información relevante, automatizar tareas y mejorar la experiencia de ventas.</p>
+   <a href="#funciones" class="btn btn-s mt-8">Ver funcionalidades</a>
+  </div>
+  <div class="relative overflow-hidden rounded-3xl p-8 text-white shadow-2xl sm:p-10" style="background:linear-gradient(135deg,#0078d4,#004e8c)">
+   <div class="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10"></div>
+   <div class="relative">
+    <span class="pulse grid h-16 w-16 place-items-center rounded-2xl bg-white/15"><i class="block h-8 w-8" data-i="bot"></i></span>
+    <h3 class="mt-6 text-2xl font-bold">Tu copiloto comercial</h3>
+    <ul class="mt-6 space-y-4" id="sol"></ul>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section id="funciones" class="py-20 lg:py-28">
+ <div class="mx-auto max-w-7xl px-5">
+  <h2 class="h2 max-w-2xl">Todo lo que tu equipo necesita para cerrar más negocios</h2>
+  <div id="feat" class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3"></div>
+ </div>
+</section>
+
+<section id="arquitectura" class="border-y border-ln bg-sf py-20 lg:py-28">
+ <div class="mx-auto max-w-7xl px-5">
+  <h2 class="h2 max-w-2xl">De la conversación al proceso comercial, sin fricción</h2>
+  <p class="mt-5 max-w-xl text-lg text-mut">Cada solicitud recorre un flujo conectado que termina en una acción real.</p>
+  <div id="arq" class="mt-12 flex flex-col items-stretch rounded-3xl bg-soft p-6 sm:p-10 lg:flex-row"></div>
+ </div>
+</section>
+
+<section id="beneficios" class="py-20 lg:py-28">
+ <div class="mx-auto max-w-7xl px-5">
+  <h2 class="h2 max-w-2xl">Resultados que se notan en la agenda y en el cierre</h2>
+  <div class="mt-12 grid gap-6 lg:grid-cols-5">
+   <div id="ringbox" class="relative overflow-hidden rounded-3xl p-8 text-white shadow-xl sm:p-10 lg:col-span-2" style="background:linear-gradient(135deg,#0078d4,#004e8c)">
+    <div class="relative h-40 w-40">
+     <svg viewBox="0 0 120 120" class="h-full w-full -rotate-90" fill="none" stroke-width="9" stroke-linecap="round"><circle cx="60" cy="60" r="52" stroke="rgba(255,255,255,.2)"/><circle class="ring" cx="60" cy="60" r="52" stroke="#fff"/></svg>
+     <div class="absolute inset-0 grid place-items-center text-4xl font-extrabold"><span><span data-count="70">0</span>%</span></div>
+    </div>
+    <p class="mt-6 text-2xl font-bold leading-snug">menos tiempo en tareas administrativas</p>
+    <p class="mt-2 text-white/80">Más horas para hablar con clientes y negociar.</p>
+   </div>
+   <div id="ben" class="card divide-y divide-ln lg:col-span-3"></div>
+  </div>
+ </div>
+</section>
+
+<section id="tecnologias" class="border-y border-ln bg-sf py-20 lg:py-28">
+ <div class="mx-auto max-w-7xl px-5">
+  <h2 class="h2 max-w-2xl">Tecnología Microsoft de punta a punta</h2>
+  <div id="tech" class="mt-12 grid gap-6 md:grid-cols-2"></div>
+ </div>
+</section>
+
+<section id="casos" class="py-20 lg:py-28">
+ <div class="mx-auto max-w-7xl px-5">
+  <h2 class="h2 max-w-2xl">Casos de uso para el día a día comercial</h2>
+  <div id="uso" class="mt-12 grid gap-x-8 gap-y-2 sm:grid-cols-2 lg:grid-cols-4"></div>
+ </div>
+</section>
+
+<section id="contacto" class="px-5 pb-20 lg:pb-28">
+ <div class="relative mx-auto max-w-7xl overflow-hidden rounded-3xl bg-ms px-6 py-16 text-center text-white shadow-2xl sm:px-12 lg:py-20" style="background:linear-gradient(135deg,#0078d4,#004e8c)">
+  <div class="absolute -left-20 -top-20 h-72 w-72 rounded-full bg-white/10"></div><div class="absolute -bottom-24 -right-16 h-80 w-80 rounded-full bg-white/10"></div>
+  <div class="relative">
+   <h2 class="h2 mx-auto max-w-2xl">Transforma tu proceso comercial con IA</h2>
+   <p class="mx-auto mt-5 max-w-xl text-lg text-white/85">Descubre en una demostración cómo el agente puede trabajar con tu equipo desde la primera semana.</p>
+   <div class="mt-9 flex flex-wrap justify-center gap-3"><a href="#contacto" class="btn bg-white !text-[#0067b8] hover:-translate-y-0.5">Agendar una demostración</a><a href="#contacto" class="btn border border-white/50 text-white hover:bg-white/10">Contactar ahora</a></div>
+  </div>
+ </div>
+</section>
+</main>
+
+<footer class="border-t border-ln bg-sf">
+ <div class="mx-auto flex max-w-7xl flex-col gap-6 px-5 py-10 text-sm text-mut md:flex-row md:items-start md:justify-between">
+  <div><b class="text-base text-ink">Agente de Ventas Inteligente</b><p class="mt-1">Desarrollado con Microsoft Copilot Studio y Microsoft Power Automate.</p></div>
+  <div class="md:text-right"><p>© 2026 Agente de Ventas Inteligente. Todos los derechos reservados.</p><p class="mt-1 text-xs">Microsoft, Copilot Studio y Power Automate son marcas de Microsoft Corporation.</p></div>
+ </div>
+</footer>
+
+<script>
+const P={
+user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+sparkles:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
+bot:'<rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 8V4M9 14h.01M15 14h.01M2 14h2M20 14h2"/>',
+workflow:'<rect x="3" y="3" width="8" height="8" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect x="13" y="13" width="8" height="8" rx="2"/>',
+briefcase:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/>',
+file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>',
+target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+unlink:'<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
+message:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+check:'<path d="M5 12l5 5 9-10"/>',
+zap:'<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+trend:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+layers:'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',
+menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
+arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>'};
+const I=n=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-full w-full">${P[n]}</svg>`;
+const $=s=>document.querySelector(s);
+const ic=(n,c)=>`<i class="block ${c}" data-i="${n}"></i>`;
+const chk=c=>`<span class="mt-0.5 h-5 w-5 flex-none ${c}">${ic('check','h-full w-full')}</span>`;
+
+const L=[['solucion','Solución'],['funciones','Funciones'],['arquitectura','Arquitectura'],['beneficios','Beneficios'],['tecnologias','Tecnologías'],['casos','Casos de uso']];
+$('#links').innerHTML=L.map(([h,t])=>`<a href="#${h}" class="transition hover:text-acc">${t}</a>`).join('');
+$('#mm').innerHTML=L.map(([h,t])=>`<a href="#${h}" class="block py-2.5 font-semibold">${t}</a>`).join('')+'<a href="#contacto" class="btn btn-p mt-2 w-full">Solicitar Demo</a>';
+
+const prob=[['clock','Pérdida de tiempo creando cotizaciones','Horas valiosas se van en documentos manuales en lugar de en vender.'],['unlink','Seguimiento inconsistente de prospectos','Sin recordatorios ni orden, las oportunidades se enfrían.'],['message','Argumentarios comerciales poco estandarizados','Cada vendedor comunica distinto y el mensaje pierde fuerza.'],['workflow','Falta de automatización en procesos comerciales','Las tareas repetitivas frenan el ritmo de todo el ciclo de venta.']];
+$('#prob').innerHTML=prob.map(([i,t,d])=>`<div class="flex gap-5 border-t border-ln py-7 first:border-0 first:pt-0"><span class="grid h-12 w-12 flex-none place-items-center rounded-xl" style="background:rgba(209,52,56,.1);color:#d13438">${ic(i,'h-6 w-6')}</span><div><h3 class="text-lg font-bold">${t}</h3><p class="mt-1 text-mut">${d}</p></div></div>`).join('');
+
+$('#sol').innerHTML=['Genera información relevante para cada cliente','Automatiza las tareas repetitivas','Mejora la experiencia de ventas'].map(t=>`<li class="flex items-center gap-3"><span class="grid h-6 w-6 flex-none place-items-center rounded-full bg-white/20">${ic('check','h-3.5 w-3.5')}</span>${t}</li>`).join('');
+
+const feat=[['file','Cotizaciones Inteligentes',['Generación automática de propuestas','Plantillas estandarizadas','Reducción de tiempos de respuesta','Mayor precisión comercial']],['target','Argumentarios de Venta',['Recomendaciones basadas en el perfil del cliente','Respuestas rápidas a objeciones','Mensajes personalizados','Mejora de la tasa de conversión']],['bell','Seguimiento Comercial',['Recordatorios automáticos','Automatización de tareas repetitivas','Seguimiento de oportunidades','Alertas y notificaciones inteligentes']]];
+$('#feat').innerHTML=feat.map(([i,t,b])=>`<article class="card p-7"><span class="grid h-12 w-12 place-items-center rounded-xl bg-ms text-white">${ic(i,'h-6 w-6')}</span><h3 class="mt-5 text-xl font-bold">${t}</h3><ul class="mt-4 space-y-3 text-mut">${b.map(x=>`<li class="flex gap-3">${chk('text-acc')}${x}</li>`).join('')}</ul></article>`).join('');
+
+const arq=[['user','Cliente / Vendedor','Inicia la conversación'],['sparkles','Microsoft Copilot Studio','Plataforma conversacional con IA generativa'],['bot','Agente de Ventas Inteligente','Interpreta la solicitud y orquesta la respuesta',1],['workflow','Power Automate','Ejecuta flujos y automatizaciones'],['briefcase','Procesos Comerciales','Cotizaciones, seguimiento y alertas']];
+$('#arq').innerHTML=arq.map(([i,t,d,h],k)=>`<div class="card mx-auto w-full max-w-sm p-5 text-center lg:max-w-none lg:flex-1 ${h?'!border-ms !bg-ms !text-white':''}"><span class="mx-auto grid h-12 w-12 place-items-center rounded-xl ${h?'bg-white/20':'bg-soft text-acc'}">${ic(i,'h-6 w-6')}</span><p class="mt-3 text-xs font-semibold ${h?'opacity-80':'text-mut'}">Paso ${k+1}</p><h3 class="mt-1 font-bold leading-snug">${t}</h3><p class="mt-2 text-sm ${h?'opacity-85':'text-mut'}">${d}</p></div>${k<4?'<div class="conn"></div>':''}`).join('');
+
+const ben=[['zap','Respuesta más rápida a clientes','Propuestas y respuestas llegan cuando el cliente aún está interesado.'],['trend','Incremento en productividad comercial','Tu equipo dedica su agenda a conversar y negociar.'],['calendar','Mejor seguimiento de oportunidades','Ninguna oportunidad se pierde por falta de un recordatorio.'],['layers','Mayor estandarización del proceso de ventas','Todos usan las mismas plantillas, mensajes y pasos.']];
+$('#ben').innerHTML=ben.map(([i,t,d])=>`<div class="flex gap-5 p-6"><span class="grid h-11 w-11 flex-none place-items-center rounded-xl bg-soft text-acc">${ic(i,'h-5 w-5')}</span><div><h3 class="font-bold">${t}</h3><p class="mt-1 text-mut">${d}</p></div></div>`).join('');
+
+const tech=[['sparkles','Microsoft Copilot Studio','Donde nace el agente conversacional.',['Creación de agentes conversacionales','Integración con Microsoft 365','IA generativa']],['workflow','Power Automate','Donde el agente pasa a la acción.',['Automatización de flujos','Integraciones empresariales','Notificaciones y procesos automáticos']]];
+$('#tech').innerHTML=tech.map(([i,t,s,b])=>`<article class="card p-8" style="border-top:4px solid #0078d4"><div class="flex items-center gap-4"><span class="grid h-14 w-14 place-items-center rounded-2xl bg-ms text-white">${ic(i,'h-7 w-7')}</span><div><h3 class="text-xl font-bold">${t}</h3><p class="text-mut">${s}</p></div></div><ul class="mt-6 space-y-3">${b.map(x=>`<li class="flex gap-3">${chk('text-acc')}${x}</li>`).join('')}</ul></article>`).join('');
+
+const uso=[['file','Generación inmediata de cotizaciones','Pide la propuesta en una conversación y recíbela con tu plantilla.'],['calendar','Seguimiento automático post-reunión','Correos y tareas listos al terminar cada reunión.'],['message','Asistencia comercial en tiempo real','Argumentos y respuestas a objeciones mientras hablas con el cliente.'],['briefcase','Preparación de propuestas comerciales','Estructura, contenido y datos clave reunidos antes de presentar.']];
+$('#uso').innerHTML=uso.map(([i,t,d])=>`<div class="border-t-2 border-ms pt-6 pb-8"><span class="block h-7 w-7 text-acc">${ic(i,'h-full w-full')}</span><h3 class="mt-4 text-lg font-bold leading-snug">${t}</h3><p class="mt-2 text-mut">${d}</p></div>`).join('');
+
+document.querySelectorAll('[data-i]').forEach(e=>e.innerHTML=I(e.dataset.i));
+
+const nav=$('#nav'),mm=$('#mm');
+addEventListener('scroll',()=>nav.classList.toggle('sc',scrollY>8),{passive:true});
+$('#mb').onclick=()=>mm.classList.toggle('hidden');
+mm.onclick=e=>{if(e.target.closest('a'))mm.classList.add('hidden')};
+document.addEventListener('pointermove',e=>{const c=e.target.closest&&e.target.closest('.card');if(c){const r=c.getBoundingClientRect();c.style.setProperty('--x',e.clientX-r.left+'px');c.style.setProperty('--y',e.clientY-r.top+'px')}});
+
+const rb=$('#ringbox'),cn=rb.querySelector('[data-count]');
+const run=()=>{const t=+cn.dataset.count;let s=null;const f=ts=>{s=s||ts;const p=Math.min((ts-s)/1500,1);cn.textContent=Math.round(t*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)};
+if('IntersectionObserver' in window){new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){rb.classList.add('on');run();o.disconnect()}},{threshold:.4}).observe(rb)}else{rb.classList.add('on');cn.textContent=70}
+</script>
+</body>
+</html>
